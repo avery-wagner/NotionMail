@@ -79,9 +79,14 @@ export function readOutput(data: IMail[]) {
 async function main() {
   console.log(
     chalk.hex(VS_CREAM)(
-      `\t\t\t\t      📬\n\n\t\t\t - Welcome to ${chalk.bold.hex(VS_RED)(
+      `\t\t\t\t     📬\n\n\t\t\t - Welcome to ${chalk.bold.hex(VS_RED)(
         `NotionMail`
       )}! -\n`
+    )
+  );
+  console.log(
+    chalk.italic.hex(VS_DARK_BLUE)(
+      `\t\t   a simple mail app supported by Notion.\n`
     )
   );
   console.log(
