@@ -3,13 +3,11 @@ import {
   Client,
   ClientErrorCode,
   isNotionClientError,
-  iteratePaginatedAPI,
 } from "@notionhq/client";
-import axios from "axios";
 import { readInput, readOutput, sendInput, sendOutput } from "./cli";
 import chalk from "chalk";
 import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
-import { DatabaseItem, extractMail, IMail } from "./types";
+import { extractMail, IMail } from "./types";
 
 /**
  * Class that handles client instantiation and query functionality.
@@ -28,31 +26,22 @@ export default class NotionMail {
 
     this.client = new Client({ auth: process.env.NOTION_KEY });
   }
+  async readMail() {
+    const { user } = await readInput();
 
-  async getData() {
-    const db = await this.client.databases.query({
+    const response: QueryDatabaseResponse = await this.client.databases.query({
       database_id: process.env.NOTION_DATABASE_ID,
+      filter: {
+        property: "Sender",
+        rich_text: {
+          equals: user,
+        },
+      },
     });
 
-    const res = await Promise.all(
-      db.results.map(async (data: any) => {
-        return await this.dataTransformer(data);
-      })
-    );
-    return res;
-  }
+    const mail: IMail[] = await extractMail(response);
 
-  private async dataTransformer(data: any): Promise<IMail> {
-    const blocks = await this.client.blocks.children.list({
-      block_id: data.id.split("-").join(""),
-    });
-
-    return {
-      id: data.id,
-      message: data.properties.Message.title[0].plain_text, // ??
-      sender: data.properties.Sender.plain_text,
-      recipient: data.properties.Recipient.plain_text,
-    };
+    readOutput(mail);
   }
 
   async sendMail() {
@@ -110,21 +99,25 @@ export default class NotionMail {
     }
   }
 
-  async readMail() {
-    const { user } = await readInput();
-
-    const response: QueryDatabaseResponse = await this.client.databases.query({
+  async getData() {
+    const db = await this.client.databases.query({
       database_id: process.env.NOTION_DATABASE_ID,
-      filter: {
-        property: "Sender",
-        rich_text: {
-          equals: user,
-        },
-      },
     });
 
-    const mail: IMail[] = await extractMail(response);
+    const res = await Promise.all(
+      db.results.map(async (data: any) => {
+        return await this.dataTransformer(data);
+      })
+    );
+    return res;
+  }
 
-    readOutput(mail);
+  private async dataTransformer(data: any): Promise<IMail> {
+    return {
+      id: data.id,
+      message: data.properties.Message.title[0].plain_text, // ??
+      sender: data.properties.Sender.plain_text,
+      recipient: data.properties.Recipient.plain_text,
+    };
   }
 }
