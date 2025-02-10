@@ -45,7 +45,12 @@ export type DatabaseItem = MailResult & {
   };
 };
 
-const extractMail = async (
+/**
+ * Extracts the typed data from QueryDatabaseResponse.
+ * @param response 
+ * @returns 
+ */
+export const extractMail = async (
   response: QueryDatabaseResponse
 ): Promise<IMail[]> => {
   const databaseItems: DatabaseItem[] = response.results.map(

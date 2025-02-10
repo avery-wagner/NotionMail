@@ -6,16 +6,15 @@ import {
   iteratePaginatedAPI,
 } from "@notionhq/client";
 import axios from "axios";
-import { readInput, sendInput } from "./cli";
+import { readInput, readOutput, sendInput, sendOutput } from "./cli";
 import chalk from "chalk";
 import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
-import { IMail } from "./types";
-// import { Block } from '@notionhq/client'
+import { DatabaseItem, extractMail, IMail } from "./types";
 
 /**
  * Class that handles client instantiation and query functionality.
  */
-export default class NotionClient {
+export default class NotionMail {
   client: any;
 
   constructor() {
@@ -53,30 +52,28 @@ export default class NotionClient {
       message: data.properties.Message.title[0].plain_text, // ??
       sender: data.properties.Sender.plain_text,
       recipient: data.properties.Recipient.plain_text,
-      // blocks: blocks.results || null
     };
   }
 
   async sendMail() {
-    const { message, sender, recipient } = await sendInput();
+    const mail = await sendInput();
 
     try {
       await this.client.pages.create({
         parent: { database_id: process.env.NOTION_DATABASE_ID },
         properties: {
           Message: {
-            title: [{ text: { content: message } }],
+            title: [{ text: { content: mail.message } }],
           },
           Sender: {
-            title: [{ text: { content: sender } }],
+            rich_text: [{ text: { content: mail.sender } }],
           },
           Recipient: {
-            title: [{ text: { content: recipient } }],
+            rich_text: [{ text: { content: mail.recipient } }],
           },
         },
       });
-
-      console.log(chalk.blue(`Message sent from ${sender} to ${recipient}.`));
+      sendOutput(mail);
       return Promise.resolve();
     } catch (err) {
       if (isNotionClientError(err)) {
@@ -116,8 +113,7 @@ export default class NotionClient {
   async readMail() {
     const { user } = await readInput();
 
-    let mailItem = await this.client.databases.query({
-      // const { results, next_cursor } = await this.client.databases.query({
+    const response: QueryDatabaseResponse = await this.client.databases.query({
       database_id: process.env.NOTION_DATABASE_ID,
       filter: {
         property: "Sender",
@@ -127,56 +123,8 @@ export default class NotionClient {
       },
     });
 
-    let numMessages = 0;
-    let next_cursor = mailItem.next_cursor;
-    const results = mailItem.results;
-    numMessages += 1;
+    const mail: IMail[] = await extractMail(response);
 
-    const pages: any[] = [];
-    // let cursor: string | undefined = undefined;
-
-    while (next_cursor !== null) {
-      // while (true) {
-      mailItem = await this.client.databases.query({
-        // const { results, next_cursor } = await this.client.databases.query({
-        database_id: process.env.NOTION_DATABASE_ID,
-        start_cursor: next_cursor,
-        filter: {
-          property: "Sender",
-          rich_text: {
-            equals: user,
-          },
-        },
-      });
-
-      if (mailItem.object === "list") {
-        next_cursor = mailItem.next_cursor;
-        pages.push(...results);
-      } else {
-        next_cursor = null;
-      }
-    }
-
-    // const res = await Promise.all(
-    //   pages.map(async (data: any) => {
-    //     return await this.transformReadData(data);
-    //   })
-    // );
-    // return res;
-    return results;
+    readOutput(mail);
   }
-
-  // private async transformReadData(data: any): Promise<IMail | Array<IMail>> {
-  //   // const blocks = await this.client.blocks.children.list({
-  //   //     block_id: data.id.split('-').join('')
-  //   // });
-
-  //   return {
-  //     id: data.id,
-  //     message: data.properties.Message.title[0].plain_text, // ??
-  //     sender: data.properties.Sender.plain_text,
-  //     // recipient: data.properties.Recipient.plain_text,
-  //     // blocks: blocks.results || null
-  //   };
-  // }
 }
