@@ -7,7 +7,6 @@ import NotionClient from "./client";
 import chalk from "chalk";
 import { IMail } from "./types";
 import {
-  RB_BLUE,
   RM_TEAL,
   VS_CREAM,
   VS_DARK_BLUE,
@@ -137,31 +136,5 @@ async function main() {
     }
   }
 }
-
-// program
-//   .name("NotionMail")
-//   .description("A simple mail app supported by Notion.")
-//   .version("1.0.0");
-
-// program
-//   .command("read")
-//   .description("Read mail from a specified user.")
-//   .action(function () {
-//     notion.readMail();
-//   });
-
-// program
-//   .command("send")
-//   .description("Send a message to a specified user.")
-//   .action(function () {
-//     notion.sendMail();
-//   });
-
-// program
-//     .command("quit")
-//     .description("Quit the NotionMail program.")
-//     .action()
-
-// program.parse(process.argv);
 
 main();
