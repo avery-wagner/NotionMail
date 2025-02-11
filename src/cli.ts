@@ -30,6 +30,7 @@ export async function sendInput() {
     message: inputs.message,
     sender: inputs.sender,
     recipient: inputs.recipient,
+    timestamp: new Date().toISOString(),
   };
 
   return mail;

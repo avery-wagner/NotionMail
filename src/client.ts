@@ -60,6 +60,9 @@ export default class NotionMail {
           Recipient: {
             rich_text: [{ text: { content: mail.recipient } }],
           },
+          Timestamp: {
+            date: { start: mail.timestamp },
+          },
         },
       });
       sendOutput(mail);
@@ -97,27 +100,5 @@ export default class NotionMail {
       }
       return Promise.reject(err);
     }
-  }
-
-  async getData() {
-    const db = await this.client.databases.query({
-      database_id: process.env.NOTION_DATABASE_ID,
-    });
-
-    const res = await Promise.all(
-      db.results.map(async (data: any) => {
-        return await this.dataTransformer(data);
-      })
-    );
-    return res;
-  }
-
-  private async dataTransformer(data: any): Promise<IMail> {
-    return {
-      id: data.id,
-      message: data.properties.Message.title[0].plain_text, // ??
-      sender: data.properties.Sender.plain_text,
-      recipient: data.properties.Recipient.plain_text,
-    };
   }
 }

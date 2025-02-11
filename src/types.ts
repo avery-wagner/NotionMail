@@ -23,6 +23,7 @@ type ExtractedPropertyValue<TType extends PropertyValueType> = Extract<
 // Extract the property value types we need
 export type PropertyValueTitle = ExtractedPropertyValue<"title">;
 export type PropertyValueRichText = ExtractedPropertyValue<"rich_text">;
+export type PropertyValueDate = ExtractedPropertyValue<"date">;
 
 /**
  * Type outlining the properties of an entry in our Mail database.
@@ -32,6 +33,7 @@ export type IMail = {
   message: string;
   sender: string;
   recipient: string;
+  timestamp: string;
 };
 
 /**
@@ -42,13 +44,14 @@ export type DatabaseItem = MailResult & {
     Message: PropertyValueTitle;
     Sender: PropertyValueRichText;
     Recipient: PropertyValueRichText;
+    Timestamp: PropertyValueDate;
   };
 };
 
 /**
  * Extracts the typed data from QueryDatabaseResponse.
- * @param response 
- * @returns 
+ * @param response
+ * @returns
  */
 export const extractMail = async (
   response: QueryDatabaseResponse
@@ -61,12 +64,14 @@ export const extractMail = async (
       const message = data.properties.Message.title[0].plain_text;
       const sender = data.properties.Sender.rich_text[0].plain_text;
       const recipient = data.properties.Recipient.rich_text[0].plain_text;
+      const timestamp = data.properties.Timestamp.date.start;
 
       const mail: IMail = {
         id: data.id,
         message,
         sender,
         recipient,
+        timestamp,
       };
       return mail;
     })
