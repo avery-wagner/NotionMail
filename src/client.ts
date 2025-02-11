@@ -101,4 +101,8 @@ export default class NotionMail {
       return Promise.reject(err);
     }
   }
+
+  async deleteMail() {
+    // TODO
+  }
 }

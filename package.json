@@ -9,7 +9,8 @@
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
     "dotenv": "^16.4.7",
-    "inquirer": "^12.4.1"
+    "inquirer": "^12.4.1",
+    "jest": "^29.7.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.1",
