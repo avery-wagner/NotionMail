@@ -138,4 +138,7 @@ async function main() {
   }
 }
 
-main();
+// main();
+if (require.main === module) {
+  main();
+}
