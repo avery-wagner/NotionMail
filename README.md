@@ -26,12 +26,19 @@ I chose to also add timestamp support, which involved adding a _Date_ property t
 
 I created a very simple unit test that seeks to verify the functionality of the CLI in my program. Using the package `@inquirer/testing`, I was able to test some of the menu features and verify that my outputs were correct.
 
-## How to use
+## How to Use
 
 > Description about how to install and run the program.
 
-- Install the package globally: `npm i -g notion-mail`
-- Run: `notion-mail`
+- Install the package globally: `sudo npm i -g notion-mail`
+- Run the program: `notion-mail`
+
+You must have the following environment variables set before running:
+
+- `NOTION_KEY`: the API integration key
+- `NOTION_DATABASE_ID`: the Mail database ID
+
+In my `.zip` submission I have provided a `.env` that you can use!
 
 ## References
 
