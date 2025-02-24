@@ -64,12 +64,14 @@ export function readOutput(data: IMail[]) {
 
   // Functional in case there is more than one message from a user.
   data.forEach((mailItem: IMail) => {
+    const time = new Date(mailItem.timestamp).toLocaleString();
     console.log(chalk.hex(VS_DARK_BLUE)(`\n----------\n`));
     console.log(
       chalk.hex(VS_DARK_BLUE)(
-        `from: ${chalk.hex(VS_MID_BLUE)(mailItem.sender)}\n`
+        `from: ${chalk.hex(VS_LIGHT_BLUE)(mailItem.sender)}\n`
       )
     );
+    console.log(chalk.hex(VS_DARK_BLUE)(`${time}\n`));
     console.log(chalk.hex(VS_CREAM)(`${mailItem.message}`));
   });
 
