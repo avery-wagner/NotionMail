@@ -13,15 +13,7 @@ import { extractMail, IMail } from "./types";
  * Class that handles client instantiation and query functionality.
  */
 export default class NotionMail {
-  // client: Client;
-  private _client?: Client;
-
-  get client() {
-    if (!this._client) {
-      this._client = new Client({ auth: process.env.NOTION_TOKEN });
-    }
-    return this._client;
-  }
+  client: Client;
 
   constructor() {
     if (!process.env.NOTION_KEY) {
@@ -32,11 +24,13 @@ export default class NotionMail {
       throw new Error("Notion database ID not specified.");
     }
 
-    // this.client = new Client({ auth: process.env.NOTION_KEY });
+    this.client = new Client({ auth: process.env.NOTION_KEY });
   }
   async readMail() {
+    // Await user input to specify the "Sender" we want to filter for
     const { user } = await readInput();
 
+    // Query with a filter to return all mail from the specified user
     const response: QueryDatabaseResponse = await this.client.databases.query({
       database_id: process.env.NOTION_DATABASE_ID,
       filter: {
@@ -47,14 +41,18 @@ export default class NotionMail {
       },
     });
 
+    // Extract the response data as an array of IMail objects
     const mail: IMail[] = await extractMail(response);
+    // Print the retrieved mail to the console
     readOutput(mail);
   }
 
   async sendMail() {
+    // Await for user input
     const mail = await sendInput();
 
     try {
+      // Try to create a new mail object/page in the database
       await this.client.pages.create({
         parent: { database_id: process.env.NOTION_DATABASE_ID },
         properties: {
@@ -72,10 +70,14 @@ export default class NotionMail {
           },
         },
       });
+
+      // If successful, print message to the console.
       sendOutput(mail);
+
       return Promise.resolve();
     } catch (err) {
       if (isNotionClientError(err)) {
+        // Handle `NotionClientError` specifically; helpful for debugging
         console.error(
           chalk.bold.red("[!] Notion API error: "),
           chalk.red(err.message)
@@ -103,13 +105,10 @@ export default class NotionMail {
             break;
         }
       } else {
+        // Handle other errors, such as network issues, program specific errors, etc.
         console.error(chalk.red("Some error occurred: ", err.message));
       }
       return Promise.reject(err);
     }
-  }
-
-  async deleteMail() {
-    // TODO
   }
 }

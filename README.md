@@ -30,8 +30,6 @@ I created a very simple unit test that seeks to verify the functionality of the 
 
 > Description about how to install and run the program.
 
-
-
 ## References
 
 > List of references to sources you relied on (e.g. StackOverflow post about Node CLI applications, API docs, any open-source libraries).
@@ -49,13 +47,11 @@ I created a very simple unit test that seeks to verify the functionality of the 
 - [https://stephencharlesweiss.com/mocks-and-spies-inspecting-console-messages-with-jest]
   - I used this author's method of spying on the console in my unit tests.
 
-
-
 ## Future Improvements
 
 > What are some future improvements you might make to this program or its code?
 
-For future improvements, I would like to flesh out the tests for my program much more. I would add individual test cases that check for error handling, and more tests to check that my `inquirer` prompts and CLI outputs are functioning correctly.
+For future improvements, I would like to flesh out the tests for my program much more. I would add individual test cases that check for error handling, and more tests to check that my `inquirer` prompts and CLI outputs are functioning correctly. Being more verbose in my test cases would also be important for future developments, i.e. checking that `sendOutput` works correctly for one message, more than one message, zero messages, etc.
 
 Additionally, I would add more detailed integration and end-to-end tests that would replace mocked API requests with real ones, and more robustly check that my program is working with the Notion API as expected.
 
@@ -73,9 +69,3 @@ I might also add some of the following features:
 I decided to use TypeScript for building my application because of its typing capabilities, and because I am comfortable with the language. When working with databases, I know it is important to employ strong type checking to protect data coming in and out of the database. This is why I sought out a method to "extract" types directly from the Notion API; this allows for strong typing of data and concise data processing within my program.
 
 Creating the `NotionMail` class ensures that only one instance of the Notion Mail client is running at a time. This could be important in a broader context to ensure that data can be properly read and written into the database, and avoids the potentiality of duplicate requests. Additionally, this structure allows for error checking within the `NotionMail` constructor to avoid running the client without the necessary connection configuration: the API key and database ID. This also prevents this sensitive information from being hard coded, and instead relies on the use of environment variables. This abstraction promotes security and deployability of the app on a larger scale.
-
-
-
-
-
- 

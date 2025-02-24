@@ -23,6 +23,7 @@ export async function sendInput() {
     { type: "input", name: "message", message: "Message:" },
   ]);
 
+  // Type the data before returning it
   const mail: IMail = {
     id: "",
     message: inputs.message,
@@ -61,6 +62,7 @@ export function readOutput(data: IMail[]) {
     )
   );
 
+  // Functional in case there is more than one message from a user.
   data.forEach((mailItem: IMail) => {
     console.log(chalk.hex(VS_DARK_BLUE)(`\n----------\n`));
     console.log(
@@ -138,6 +140,7 @@ async function main() {
   }
 }
 
+// Avoids calling main if we are running tests
 if (require.main === module) {
   main();
 }

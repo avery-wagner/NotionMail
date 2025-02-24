@@ -1,0 +1,5 @@
+./tst/clienttest.ts
+.gitignore
+.env
+node_modules
+.vscode
