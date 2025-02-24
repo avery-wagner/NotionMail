@@ -10,8 +10,10 @@ const mockSendData: IMail = {
   message: "Test message",
   sender: "John",
   recipient: "Jane",
-  timestamp: Date.now().toString(),
+  timestamp: new Date().toISOString(),
 };
+
+// Mock our NotionMail class to test the CLI functionality.
 vi.mock("../src/client", () => {
   return {
     default: vi.fn().mockImplementation(() => ({
@@ -25,6 +27,7 @@ vi.mock("../src/client", () => {
   };
 });
 
+// Mock the input prompt functions so that our tests don't time out
 vi.mock("../src/cli", async () => {
   const actual = await vi.importActual<typeof import("../src/cli")>(
     "../src/cli"
@@ -36,7 +39,7 @@ vi.mock("../src/cli", async () => {
       message: "Test message",
       sender: "John",
       recipient: "Jane",
-      timestamp: Date.now().toString(),
+      timestamp: new Date().toISOString(),
     }),
     readInput: vi.fn().mockResolvedValue({
       user: "John",
@@ -44,7 +47,7 @@ vi.mock("../src/cli", async () => {
   };
 });
 
-describe("Notion Mail Class", () => {
+describe("Notion Mail CLI", () => {
   let notion: NotionMail;
   let logSpy: ReturnType<typeof vi.spyOn>;
 
@@ -58,6 +61,7 @@ describe("Notion Mail Class", () => {
   });
 
   it("should process input correctly for sending mail", async () => {
+    // Using the @inquirer/testing package, we can verify how our messages are being rendered and mimic the behaviour of the program
     const { answer, events, getScreen } = await render(inputPrompt, {
       message: "What would you like to do?",
     });
@@ -94,4 +98,5 @@ describe("Notion Mail Class", () => {
     expect(console.log).toHaveBeenNthCalledWith(6, `Test message`);
     expect(console.log).toHaveBeenNthCalledWith(7, `\n`);
   });
+
 });

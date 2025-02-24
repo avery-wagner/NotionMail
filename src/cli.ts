@@ -2,8 +2,7 @@
 
 import inquirer from "inquirer";
 import { config } from "dotenv";
-
-import NotionClient from "./client";
+import NotionMail from "./client";
 import chalk from "chalk";
 import { IMail } from "./types";
 import {
@@ -16,7 +15,6 @@ import {
 } from "./colors";
 
 config();
-export const notion = new NotionClient();
 
 export async function sendInput() {
   const inputs = await inquirer.prompt([
@@ -77,6 +75,8 @@ export function readOutput(data: IMail[]) {
 }
 
 async function main() {
+  const notion = new NotionMail();
+
   console.log(
     chalk.hex(VS_CREAM)(
       `\t\t\t\t     📬\n\n\t\t\t - Welcome to ${chalk.bold.hex(VS_RED)(
@@ -138,7 +138,6 @@ async function main() {
   }
 }
 
-// main();
 if (require.main === module) {
   main();
 }

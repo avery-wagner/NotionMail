@@ -13,7 +13,15 @@ import { extractMail, IMail } from "./types";
  * Class that handles client instantiation and query functionality.
  */
 export default class NotionMail {
-  client: any;
+  // client: Client;
+  private _client?: Client;
+
+  get client() {
+    if (!this._client) {
+      this._client = new Client({ auth: process.env.NOTION_TOKEN });
+    }
+    return this._client;
+  }
 
   constructor() {
     if (!process.env.NOTION_KEY) {
@@ -24,7 +32,7 @@ export default class NotionMail {
       throw new Error("Notion database ID not specified.");
     }
 
-    this.client = new Client({ auth: process.env.NOTION_KEY });
+    // this.client = new Client({ auth: process.env.NOTION_KEY });
   }
   async readMail() {
     const { user } = await readInput();
@@ -40,7 +48,6 @@ export default class NotionMail {
     });
 
     const mail: IMail[] = await extractMail(response);
-
     readOutput(mail);
   }
 
