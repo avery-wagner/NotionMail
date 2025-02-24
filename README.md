@@ -30,6 +30,9 @@ I created a very simple unit test that seeks to verify the functionality of the 
 
 > Description about how to install and run the program.
 
+- Install the package globally: `npm i -g notion-mail`
+- Run: `notion-mail`
+
 ## References
 
 > List of references to sources you relied on (e.g. StackOverflow post about Node CLI applications, API docs, any open-source libraries).
