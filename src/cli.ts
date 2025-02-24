@@ -144,6 +144,7 @@ async function main() {
 // if (require.main === module) {
 //   main();
 // }
-if (import.meta.url === new URL(process.argv[1], import.meta.url).href) {
-  main();
-}
+// if (import.meta.url === new URL(process.argv[1], import.meta.url).href) {
+//   main();
+// }
+main();
